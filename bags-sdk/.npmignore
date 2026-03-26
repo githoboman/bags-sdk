@@ -1,0 +1,21 @@
+# Source & dev files
+src/
+tests/
+apps/
+examples/
+
+# Config
+tsconfig.json
+vitest.config.ts
+CLAUDE.md
+.env
+.env.example
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# Misc
+node_modules/
+*.map
