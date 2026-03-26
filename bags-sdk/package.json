@@ -18,6 +18,10 @@
     "example:launch": "ts-node examples/launch-token.ts",
     "example:trade": "ts-node examples/trade.ts",
     "example:stream": "ts-node examples/stream-events.ts",
+    "example:session": "ts-node examples/session-key.ts",
+    "example:privy": "ts-node examples/privy-signer.ts",
+    "example:fees": "ts-node examples/fee-sharing.ts",
+    "example:webhook": "ts-node examples/webhook-server.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },

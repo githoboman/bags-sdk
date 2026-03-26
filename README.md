@@ -29,6 +29,24 @@ const sdk = new BagsSDK({
 const signer = KeypairSigner.fromEnv() // reads PRIVATE_KEY from env
 ```
 
+## Examples
+
+Run any example with `npm run example:<name>`:
+
+| Example | Command | What it shows |
+|---------|---------|---------------|
+| Launch a token | `npm run example:launch` | Image upload, metadata, tx building, confirm |
+| Trade (buy/sell) | `npm run example:trade` | Best-execution routing, quote inspection, pool state |
+| Stream events | `npm run example:stream` | Real-time launches, trades, graduations |
+| Session keys | `npm run example:session` | Scoped signing, expiration, revocation |
+| Privy signer | `npm run example:privy` | Embedded wallet, delegated signing |
+| Fee sharing | `npm run example:fees` | Configure splits, check stats, claim |
+| Webhook server | `npm run example:webhook` | Parse Helius webhooks into SDK events |
+
+All examples require `BAGS_API_KEY` and `HELIUS_API_KEY` env vars. See each file in `bags-sdk/examples/` for details.
+
+---
+
 ## Modules
 
 ### `sdk.tokens` — launch and feed
@@ -227,6 +245,33 @@ console.log(state.transactionCount, state.expiresAt, state.revoked)
 
 // Revoke early
 session.revoke()
+```
+
+## Error Handling
+
+```ts
+import { SessionKeyError } from "bags-sdk"
+
+try {
+  await sdk.trade.buy(mint, 0.5, session.signer)
+} catch (err) {
+  if (err instanceof SessionKeyError) {
+    // Session expired, revoked, or unauthorized program
+    console.log("Session guard:", err.message)
+  } else if (err.message.includes("simulation failed")) {
+    // Transaction would fail on-chain — check balance or slippage
+    console.log("Simulation failed")
+  } else if (err.message.includes("No quote available")) {
+    // Both Bags and DFlow couldn't quote this trade
+    console.log("No route available")
+  } else if (err.message.includes("Quote has expired")) {
+    // Quote is older than 30s — fetch a new one
+    const newQuote = await sdk.trade.quote(params)
+  } else if (err.message.includes("Fee splits must sum to 1.0")) {
+    // Fee config validation — splits don't add up
+    console.log("Fix your fee splits")
+  }
+}
 ```
 
 ## Environment Variables
